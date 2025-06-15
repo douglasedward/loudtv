@@ -1,0 +1,412 @@
+{
+  "schemas": {
+    "UserEvent": {
+      "type": "record",
+      "name": "UserEvent",
+      "namespace": "com.livestreaming.events.user",
+      "doc": "User-related events in the livestreaming platform",
+      "fields": [
+        {
+          "name": "eventId",
+          "type": "string",
+          "doc": "Unique identifier for the event"
+        },
+        {
+          "name": "eventType",
+          "type": {
+            "type": "enum",
+            "name": "UserEventType",
+            "symbols": [
+              "user.created",
+              "user.updated",
+              "user.deleted",
+              "user.authenticated",
+              "user.logged_out",
+              "user.followed",
+              "user.unfollowed",
+              "user.avatar_updated",
+              "user.privacy_updated"
+            ]
+          },
+          "doc": "Type of user event"
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "doc": "Service that generated the event"
+        },
+        {
+          "name": "timestamp",
+          "type": "string",
+          "doc": "ISO 8601 timestamp when event occurred"
+        },
+        {
+          "name": "version",
+          "type": "string",
+          "default": "1.0",
+          "doc": "Schema version"
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "record",
+            "name": "UserEventData",
+            "fields": [
+              {
+                "name": "userId",
+                "type": "string",
+                "doc": "User identifier"
+              },
+              {
+                "name": "username",
+                "type": ["null", "string"],
+                "default": null,
+                "doc": "Username"
+              },
+              {
+                "name": "email",
+                "type": ["null", "string"],
+                "default": null,
+                "doc": "User email"
+              },
+              {
+                "name": "userType",
+                "type": {
+                  "type": "enum",
+                  "name": "UserType",
+                  "symbols": ["viewer", "streamer", "moderator", "admin"]
+                },
+                "doc": "Type of user account"
+              },
+              {
+                "name": "followerId",
+                "type": ["null", "string"],
+                "default": null,
+                "doc": "ID of user following (for follow events)"
+              },
+              {
+                "name": "followingId",
+                "type": ["null", "string"],
+                "default": null,
+                "doc": "ID of user being followed (for follow events)"
+              }
+            ]
+          },
+          "doc": "Event-specific data"
+        },
+        {
+          "name": "metadata",
+          "type": [
+            "null",
+            {
+              "type": "record",
+              "name": "EventMetadata",
+              "fields": [
+                {
+                  "name": "correlationId",
+                  "type": ["null", "string"],
+                  "default": null,
+                  "doc": "Correlation ID for tracing"
+                },
+                {
+                  "name": "sessionId",
+                  "type": ["null", "string"],
+                  "default": null,
+                  "doc": "User session ID"
+                },
+                {
+                  "name": "userAgent",
+                  "type": ["null", "string"],
+                  "default": null,
+                  "doc": "User agent string"
+                },
+                {
+                  "name": "ipAddress",
+                  "type": ["null", "string"],
+                  "default": null,
+                  "doc": "Client IP address"
+                }
+              ]
+            }
+          ],
+          "default": null,
+          "doc": "Additional event metadata"
+        }
+      ]
+    },
+
+    "StreamEvent": {
+      "type": "record",
+      "name": "StreamEvent",
+      "namespace": "com.livestreaming.events.stream",
+      "doc": "Stream-related events in the livestreaming platform",
+      "fields": [
+        {
+          "name": "eventId",
+          "type": "string"
+        },
+        {
+          "name": "eventType",
+          "type": {
+            "type": "enum",
+            "name": "StreamEventType",
+            "symbols": [
+              "stream.started",
+              "stream.ended",
+              "stream.updated",
+              "stream.error",
+              "viewer.joined",
+              "viewer.left"
+            ]
+          }
+        },
+        {
+          "name": "source",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "string"
+        },
+        {
+          "name": "version",
+          "type": "string",
+          "default": "1.0"
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "record",
+            "name": "StreamEventData",
+            "fields": [
+              {
+                "name": "streamId",
+                "type": "string"
+              },
+              {
+                "name": "channelId",
+                "type": "string"
+              },
+              {
+                "name": "streamerId",
+                "type": "string"
+              },
+              {
+                "name": "title",
+                "type": ["null", "string"],
+                "default": null
+              },
+              {
+                "name": "category",
+                "type": ["null", "string"],
+                "default": null
+              },
+              {
+                "name": "quality",
+                "type": ["null", "string"],
+                "default": null
+              },
+              {
+                "name": "viewerCount",
+                "type": ["null", "int"],
+                "default": null
+              },
+              {
+                "name": "viewerId",
+                "type": ["null", "string"],
+                "default": null
+              }
+            ]
+          }
+        },
+        {
+          "name": "metadata",
+          "type": ["null", "EventMetadata"],
+          "default": null
+        }
+      ]
+    },
+
+    "ChatEvent": {
+      "type": "record",
+      "name": "ChatEvent",
+      "namespace": "com.livestreaming.events.chat",
+      "doc": "Chat-related events in the livestreaming platform",
+      "fields": [
+        {
+          "name": "eventId",
+          "type": "string"
+        },
+        {
+          "name": "eventType",
+          "type": {
+            "type": "enum",
+            "name": "ChatEventType",
+            "symbols": [
+              "chat.message_sent",
+              "chat.message_deleted",
+              "chat.user_timeout",
+              "chat.user_banned",
+              "chat.slow_mode_enabled",
+              "chat.slow_mode_disabled"
+            ]
+          }
+        },
+        {
+          "name": "source",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "string"
+        },
+        {
+          "name": "version",
+          "type": "string",
+          "default": "1.0"
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "record",
+            "name": "ChatEventData",
+            "fields": [
+              {
+                "name": "messageId",
+                "type": "string"
+              },
+              {
+                "name": "channelId",
+                "type": "string"
+              },
+              {
+                "name": "userId",
+                "type": "string"
+              },
+              {
+                "name": "content",
+                "type": ["null", "string"],
+                "default": null
+              },
+              {
+                "name": "moderatorId",
+                "type": ["null", "string"],
+                "default": null
+              },
+              {
+                "name": "reason",
+                "type": ["null", "string"],
+                "default": null
+              },
+              {
+                "name": "duration",
+                "type": ["null", "int"],
+                "default": null
+              }
+            ]
+          }
+        },
+        {
+          "name": "metadata",
+          "type": ["null", "EventMetadata"],
+          "default": null
+        }
+      ]
+    },
+
+    "PaymentEvent": {
+      "type": "record",
+      "name": "PaymentEvent",
+      "namespace": "com.livestreaming.events.payment",
+      "doc": "Payment-related events (donations, subscriptions)",
+      "fields": [
+        {
+          "name": "eventId",
+          "type": "string"
+        },
+        {
+          "name": "eventType",
+          "type": {
+            "type": "enum",
+            "name": "PaymentEventType",
+            "symbols": [
+              "payment.completed",
+              "payment.failed",
+              "payment.refunded",
+              "donation.received",
+              "subscription.created",
+              "subscription.renewed",
+              "subscription.cancelled"
+            ]
+          }
+        },
+        {
+          "name": "source",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "string"
+        },
+        {
+          "name": "version",
+          "type": "string",
+          "default": "1.0"
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "record",
+            "name": "PaymentEventData",
+            "fields": [
+              {
+                "name": "paymentId",
+                "type": "string"
+              },
+              {
+                "name": "userId",
+                "type": "string"
+              },
+              {
+                "name": "recipientId",
+                "type": ["null", "string"],
+                "default": null
+              },
+              {
+                "name": "amount",
+                "type": "double"
+              },
+              {
+                "name": "currency",
+                "type": "string",
+                "default": "USD"
+              },
+              {
+                "name": "paymentMethod",
+                "type": "string"
+              },
+              {
+                "name": "status",
+                "type": {
+                  "type": "enum",
+                  "name": "PaymentStatus",
+                  "symbols": ["pending", "completed", "failed", "refunded"]
+                }
+              },
+              {
+                "name": "message",
+                "type": ["null", "string"],
+                "default": null
+              }
+            ]
+          }
+        },
+        {
+          "name": "metadata",
+          "type": ["null", "EventMetadata"],
+          "default": null
+        }
+      ]
+    }
+  }
+}
