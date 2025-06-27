@@ -1,0 +1,23 @@
+services:
+  stream-redis:
+    image: redis:7-alpine
+    container_name: stream-service-redis
+    ports:
+      - '6382:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - loudtv-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis_data:
+
+networks:
+  loudtv-network:
+    external: true
