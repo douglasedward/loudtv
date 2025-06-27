@@ -1,6 +1,5 @@
 /**
- * NestJS Kafka Module for Livestreaming Microservices
- * Provides a NestJS-compatible module for Kafka integration
+ * NestJS Kafka Module for LoudTV
  */
 import { Module, DynamicModule, Global } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -74,7 +73,9 @@ export class KafkaModule {
         groupId: `${serviceName}-group`,
         useConfigService: true,
         options: {
-          brokers: [configService.get("KAFKA_BROKER", "kafka:9092")],
+          brokers: configService
+            .get<string>("KAFKA_BROKERS", "kafka:9092")
+            .split(","),
           retry: {
             initialRetryTime: 100,
             retries: 8,

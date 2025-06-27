@@ -1,6 +1,6 @@
 {
-  "name": "@loudtv/kafka-client",
-  "version": "0.0.1",
+  "name": "@loudtv/kafka",
+  "version": "0.0.2",
   "description": "Shared Kafka client library for LoudTV microservices",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,12 +13,11 @@
   },
   "keywords": [
     "kafka",
-    "microservices",
     "nestjs",
     "livestreaming",
     "loudtv"
   ],
-  "author": "Douglas Eduardo",
+  "author": "Douglas Eduardo <devdouglaseduardo@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "kafkajs": "^2.2.4"
@@ -30,17 +29,16 @@
     "rxjs": "^7.8.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.7",
+    "@types/node": "^24.0.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "README.md"
+    "dist/**/*"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/douglasedward/loudtv-microservices.git",
-    "directory": "packages/kafka-client"
+    "url": "git+https://github.com/douglasedward/loudtv.git",
+    "directory": "packages/kafka"
   }
 }

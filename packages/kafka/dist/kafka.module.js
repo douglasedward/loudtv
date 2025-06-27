@@ -58,7 +58,7 @@ let KafkaModule = KafkaModule_1 = class KafkaModule {
                 groupId: `${serviceName}-group`,
                 useConfigService: true,
                 options: {
-                    brokers: [configService.get("KAFKA_BROKER", "kafka:9092")],
+                    brokers: [configService.get("KAFKA_BROKERS", "kafka:9092")],
                     retry: {
                         initialRetryTime: 100,
                         retries: 8,

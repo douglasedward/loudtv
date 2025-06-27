@@ -1,6 +1,5 @@
 /**
- * Shared Kafka Client Library for Livestreaming Microservices
- * Provides a standardized way to interact with Kafka across all services
+ * Kafka Client for LoudTV
  */
 import {
   Kafka,
@@ -14,7 +13,7 @@ import { Logger } from "@nestjs/common";
 
 export interface KafkaEventBase {
   eventId: string;
-  eventType: string;
+  eventType: (typeof EVENT_TYPES)[keyof typeof EVENT_TYPES] | string;
   source: string;
   timestamp: string;
   version: string;
@@ -480,5 +479,3 @@ export const EVENT_TYPES = {
   SYSTEM_ERROR: "system.error",
   SYSTEM_ALERT: "system.alert",
 } as const;
-
-export default KafkaClient;

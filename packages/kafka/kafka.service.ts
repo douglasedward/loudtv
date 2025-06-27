@@ -1,6 +1,5 @@
 /**
- * NestJS Kafka Service for Livestreaming Microservices
- * Provides a service-oriented wrapper around the Kafka client
+ * NestJS Kafka Service for LoudTV
  */
 import {
   Injectable,
@@ -51,7 +50,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
         clientId: this.options.clientId,
         groupId: this.options.groupId,
         brokers: this.options.brokers || [
-          this.configService.get("KAFKA_BROKER", "kafka:9092"),
+          this.configService.get("KAFKA_BROKERS", "kafka:9092"),
         ],
         retry: {
           initialRetryTime: this.configService.get(
@@ -295,25 +294,28 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   async publishStreamEvent<T = any>(
     eventType: string,
     streamId: string,
+    username: string,
     data: T,
     correlationId?: string
   ): Promise<void> {
     await this.publishEvent(
       KAFKA_TOPICS.STREAM_EVENTS,
       eventType,
-      { streamId, ...data },
+      { streamId, username, ...data },
       { key: streamId, correlationId }
     );
   }
 
   async publishStreamStarted(
     streamId: string,
+    username: string,
     streamData: any,
     correlationId?: string
   ): Promise<void> {
     await this.publishStreamEvent(
       EVENT_TYPES.STREAM_STARTED,
       streamId,
+      username,
       streamData,
       correlationId
     );
@@ -321,12 +323,14 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
 
   async publishStreamEnded(
     streamId: string,
+    username: string,
     streamData: any,
     correlationId?: string
   ): Promise<void> {
     await this.publishStreamEvent(
       EVENT_TYPES.STREAM_ENDED,
       streamId,
+      username,
       streamData,
       correlationId
     );
@@ -334,12 +338,14 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
 
   async publishViewerJoined(
     streamId: string,
+    username: string,
     viewerData: any,
     correlationId?: string
   ): Promise<void> {
     await this.publishStreamEvent(
       EVENT_TYPES.VIEWER_JOINED,
       streamId,
+      username,
       viewerData,
       correlationId
     );
@@ -347,12 +353,14 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
 
   async publishViewerLeft(
     streamId: string,
+    username: string,
     viewerData: any,
     correlationId?: string
   ): Promise<void> {
     await this.publishStreamEvent(
       EVENT_TYPES.VIEWER_LEFT,
       streamId,
+      username,
       viewerData,
       correlationId
     );
@@ -402,49 +410,6 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * Publish Payment Events
-   */
-  async publishPaymentEvent<T = any>(
-    eventType: string,
-    paymentId: string,
-    data: T,
-    correlationId?: string
-  ): Promise<void> {
-    await this.publishEvent(
-      KAFKA_TOPICS.PAYMENT_EVENTS,
-      eventType,
-      { paymentId, ...data },
-      { key: paymentId, correlationId }
-    );
-  }
-
-  async publishPaymentCompleted(
-    paymentId: string,
-    paymentData: any,
-    correlationId?: string
-  ): Promise<void> {
-    await this.publishPaymentEvent(
-      EVENT_TYPES.PAYMENT_COMPLETED,
-      paymentId,
-      paymentData,
-      correlationId
-    );
-  }
-
-  async publishDonationReceived(
-    donationId: string,
-    donationData: any,
-    correlationId?: string
-  ): Promise<void> {
-    await this.publishPaymentEvent(
-      EVENT_TYPES.DONATION_RECEIVED,
-      donationId,
-      donationData,
-      correlationId
-    );
-  }
-
-  /**
    * Publish Analytics Events
    */
   async publishAnalyticsEvent<T = any>(
@@ -454,47 +419,6 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   ): Promise<void> {
     await this.publishEvent(KAFKA_TOPICS.ANALYTICS_EVENTS, eventType, data, {
       correlationId,
-    });
-  }
-
-  /**
-   * Publish System Events
-   */
-  async publishSystemEvent<T = any>(
-    eventType: string,
-    data: T,
-    correlationId?: string
-  ): Promise<void> {
-    await this.publishEvent(
-      KAFKA_TOPICS.SYSTEM_EVENTS,
-      eventType,
-      { service: this.serviceName, ...data },
-      { key: this.serviceName, correlationId }
-    );
-  }
-
-  async publishSystemStartup(metadata: any = {}): Promise<void> {
-    await this.publishSystemEvent(EVENT_TYPES.SYSTEM_STARTUP, {
-      timestamp: new Date().toISOString(),
-      ...metadata,
-    });
-  }
-
-  async publishSystemShutdown(metadata: any = {}): Promise<void> {
-    await this.publishSystemEvent(EVENT_TYPES.SYSTEM_SHUTDOWN, {
-      timestamp: new Date().toISOString(),
-      ...metadata,
-    });
-  }
-
-  async publishHealthCheck(
-    status: "healthy" | "unhealthy",
-    details: any = {}
-  ): Promise<void> {
-    await this.publishSystemEvent(EVENT_TYPES.SYSTEM_HEALTH_CHECK, {
-      status,
-      timestamp: new Date().toISOString(),
-      ...details,
     });
   }
 
@@ -541,5 +465,3 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
       .substr(2, 9)}`;
   }
 }
-
-export { KAFKA_TOPICS, EVENT_TYPES } from "./kafka-client";
