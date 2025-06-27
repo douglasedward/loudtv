@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create Topics Script for Kafka
-# This script creates all necessary topics for the livestreaming platform
+# This script creates all necessary topics for the platform
 
 set -e
 
@@ -18,7 +18,6 @@ done
 
 echo "✅ Kafka is ready!"
 
-# Function to create topic if it doesn't exist
 create_topic() {
   local topic_name=$1
   local partitions=${2:-3}
@@ -102,6 +101,4 @@ done
 
 echo "🎉 All topics created successfully!"
 echo ""
-echo "🔗 Access Kafka UI at: http://localhost:8080"
-echo "📊 Access metrics at: http://localhost:9308/metrics"
-echo "🗂️  Access Schema Registry at: http://localhost:8081"
+echo "🔗 Kafka UI: http://localhost:8080"
