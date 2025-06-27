@@ -1,0 +1,64 @@
+services:
+  channel-mongo:
+    image: mongo:8
+    container_name: channel-service-mongo
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_DATABASE: channel_db
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - loudtv-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  channel-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: channel-service-elasticsearch
+    restart: unless-stopped
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - loudtv-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  channel-redis:
+    image: redis:7-alpine
+    container_name: channel-service-redis
+    restart: unless-stopped
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - loudtv-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:
+  elasticsearch_data:
+  redis_data:
+
+networks:
+  loudtv-network:
+    external: true
