@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EVENT_TYPES = exports.KAFKA_TOPICS = exports.KafkaClient = void 0;
 /**
- * Shared Kafka Client Library for Livestreaming Microservices
- * Provides a standardized way to interact with Kafka across all services
+ * Kafka Client for LoudTV
  */
 const kafkajs_1 = require("kafkajs");
 const common_1 = require("@nestjs/common");
@@ -327,4 +326,3 @@ exports.EVENT_TYPES = {
     SYSTEM_ERROR: "system.error",
     SYSTEM_ALERT: "system.alert",
 };
-exports.default = KafkaClient;

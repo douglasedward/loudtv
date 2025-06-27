@@ -9,8 +9,7 @@ var KafkaModule_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KafkaModule = void 0;
 /**
- * NestJS Kafka Module for Livestreaming Microservices
- * Provides a NestJS-compatible module for Kafka integration
+ * NestJS Kafka Module for LoudTV
  */
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
@@ -58,7 +57,9 @@ let KafkaModule = KafkaModule_1 = class KafkaModule {
                 groupId: `${serviceName}-group`,
                 useConfigService: true,
                 options: {
-                    brokers: [configService.get("KAFKA_BROKERS", "kafka:9092")],
+                    brokers: configService
+                        .get("KAFKA_BROKERS", "kafka:9092")
+                        .split(","),
                     retry: {
                         initialRetryTime: 100,
                         retries: 8,

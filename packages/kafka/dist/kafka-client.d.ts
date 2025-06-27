@@ -1,11 +1,10 @@
 /**
- * Shared Kafka Client Library for Livestreaming Microservices
- * Provides a standardized way to interact with Kafka across all services
+ * Kafka Client for LoudTV
  */
 import { Kafka } from "kafkajs";
 export interface KafkaEventBase {
     eventId: string;
-    eventType: string;
+    eventType: (typeof EVENT_TYPES)[keyof typeof EVENT_TYPES] | string;
     source: string;
     timestamp: string;
     version: string;
@@ -190,4 +189,3 @@ export declare const EVENT_TYPES: {
     readonly SYSTEM_ERROR: "system.error";
     readonly SYSTEM_ALERT: "system.alert";
 };
-export default KafkaClient;

@@ -1,6 +1,5 @@
 /**
- * NestJS Kafka Service for Livestreaming Microservices
- * Provides a service-oriented wrapper around the Kafka client
+ * NestJS Kafka Service for LoudTV
  */
 import { OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -55,11 +54,11 @@ export declare class KafkaService implements OnModuleInit, OnModuleDestroy {
     /**
      * Publish Stream Events
      */
-    publishStreamEvent<T = any>(eventType: string, streamId: string, data: T, correlationId?: string): Promise<void>;
-    publishStreamStarted(streamId: string, streamData: any, correlationId?: string): Promise<void>;
-    publishStreamEnded(streamId: string, streamData: any, correlationId?: string): Promise<void>;
-    publishViewerJoined(streamId: string, viewerData: any, correlationId?: string): Promise<void>;
-    publishViewerLeft(streamId: string, viewerData: any, correlationId?: string): Promise<void>;
+    publishStreamEvent<T = any>(eventType: string, streamId: string, username: string, data: T, correlationId?: string): Promise<void>;
+    publishStreamStarted(streamId: string, username: string, streamData: any, correlationId?: string): Promise<void>;
+    publishStreamEnded(streamId: string, username: string, streamData: any, correlationId?: string): Promise<void>;
+    publishViewerJoined(streamId: string, username: string, viewerData: any, correlationId?: string): Promise<void>;
+    publishViewerLeft(streamId: string, username: string, viewerData: any, correlationId?: string): Promise<void>;
     /**
      * Publish Chat Events
      */
@@ -67,22 +66,9 @@ export declare class KafkaService implements OnModuleInit, OnModuleDestroy {
     publishChatMessage(channelId: string, messageData: any, correlationId?: string): Promise<void>;
     publishChatModeration(channelId: string, moderationData: any, correlationId?: string): Promise<void>;
     /**
-     * Publish Payment Events
-     */
-    publishPaymentEvent<T = any>(eventType: string, paymentId: string, data: T, correlationId?: string): Promise<void>;
-    publishPaymentCompleted(paymentId: string, paymentData: any, correlationId?: string): Promise<void>;
-    publishDonationReceived(donationId: string, donationData: any, correlationId?: string): Promise<void>;
-    /**
      * Publish Analytics Events
      */
     publishAnalyticsEvent<T = any>(eventType: string, data: T, correlationId?: string): Promise<void>;
-    /**
-     * Publish System Events
-     */
-    publishSystemEvent<T = any>(eventType: string, data: T, correlationId?: string): Promise<void>;
-    publishSystemStartup(metadata?: any): Promise<void>;
-    publishSystemShutdown(metadata?: any): Promise<void>;
-    publishHealthCheck(status: "healthy" | "unhealthy", details?: any): Promise<void>;
     /**
      * Health check
      */
@@ -108,4 +94,3 @@ export declare class KafkaService implements OnModuleInit, OnModuleDestroy {
      */
     private generateEventId;
 }
-export { KAFKA_TOPICS, EVENT_TYPES } from "./kafka-client";

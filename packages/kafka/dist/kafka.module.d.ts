@@ -1,6 +1,5 @@
 /**
- * NestJS Kafka Module for Livestreaming Microservices
- * Provides a NestJS-compatible module for Kafka integration
+ * NestJS Kafka Module for LoudTV
  */
 import { DynamicModule } from "@nestjs/common";
 import { KafkaClientOptions } from "./kafka-client";

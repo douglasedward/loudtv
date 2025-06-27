@@ -13,10 +13,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var KafkaService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EVENT_TYPES = exports.KAFKA_TOPICS = exports.KafkaService = void 0;
+exports.KafkaService = void 0;
 /**
- * NestJS Kafka Service for Livestreaming Microservices
- * Provides a service-oriented wrapper around the Kafka client
+ * NestJS Kafka Service for LoudTV
  */
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
@@ -47,7 +46,7 @@ let KafkaService = KafkaService_1 = class KafkaService {
                 clientId: this.options.clientId,
                 groupId: this.options.groupId,
                 brokers: this.options.brokers || [
-                    this.configService.get("KAFKA_BROKER", "kafka:9092"),
+                    this.configService.get("KAFKA_BROKERS", "kafka:9092"),
                 ],
                 retry: {
                     initialRetryTime: this.configService.get("KAFKA_RETRY_INITIAL_TIME", 100),
@@ -173,20 +172,20 @@ let KafkaService = KafkaService_1 = class KafkaService {
     /**
      * Publish Stream Events
      */
-    async publishStreamEvent(eventType, streamId, data, correlationId) {
-        await this.publishEvent(kafka_client_1.KAFKA_TOPICS.STREAM_EVENTS, eventType, { streamId, ...data }, { key: streamId, correlationId });
+    async publishStreamEvent(eventType, streamId, username, data, correlationId) {
+        await this.publishEvent(kafka_client_1.KAFKA_TOPICS.STREAM_EVENTS, eventType, { streamId, username, ...data }, { key: streamId, correlationId });
     }
-    async publishStreamStarted(streamId, streamData, correlationId) {
-        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.STREAM_STARTED, streamId, streamData, correlationId);
+    async publishStreamStarted(streamId, username, streamData, correlationId) {
+        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.STREAM_STARTED, streamId, username, streamData, correlationId);
     }
-    async publishStreamEnded(streamId, streamData, correlationId) {
-        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.STREAM_ENDED, streamId, streamData, correlationId);
+    async publishStreamEnded(streamId, username, streamData, correlationId) {
+        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.STREAM_ENDED, streamId, username, streamData, correlationId);
     }
-    async publishViewerJoined(streamId, viewerData, correlationId) {
-        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.VIEWER_JOINED, streamId, viewerData, correlationId);
+    async publishViewerJoined(streamId, username, viewerData, correlationId) {
+        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.VIEWER_JOINED, streamId, username, viewerData, correlationId);
     }
-    async publishViewerLeft(streamId, viewerData, correlationId) {
-        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.VIEWER_LEFT, streamId, viewerData, correlationId);
+    async publishViewerLeft(streamId, username, viewerData, correlationId) {
+        await this.publishStreamEvent(kafka_client_1.EVENT_TYPES.VIEWER_LEFT, streamId, username, viewerData, correlationId);
     }
     /**
      * Publish Chat Events
@@ -201,48 +200,11 @@ let KafkaService = KafkaService_1 = class KafkaService {
         await this.publishChatEvent(kafka_client_1.EVENT_TYPES.CHAT_USER_TIMEOUT, channelId, moderationData, correlationId);
     }
     /**
-     * Publish Payment Events
-     */
-    async publishPaymentEvent(eventType, paymentId, data, correlationId) {
-        await this.publishEvent(kafka_client_1.KAFKA_TOPICS.PAYMENT_EVENTS, eventType, { paymentId, ...data }, { key: paymentId, correlationId });
-    }
-    async publishPaymentCompleted(paymentId, paymentData, correlationId) {
-        await this.publishPaymentEvent(kafka_client_1.EVENT_TYPES.PAYMENT_COMPLETED, paymentId, paymentData, correlationId);
-    }
-    async publishDonationReceived(donationId, donationData, correlationId) {
-        await this.publishPaymentEvent(kafka_client_1.EVENT_TYPES.DONATION_RECEIVED, donationId, donationData, correlationId);
-    }
-    /**
      * Publish Analytics Events
      */
     async publishAnalyticsEvent(eventType, data, correlationId) {
         await this.publishEvent(kafka_client_1.KAFKA_TOPICS.ANALYTICS_EVENTS, eventType, data, {
             correlationId,
-        });
-    }
-    /**
-     * Publish System Events
-     */
-    async publishSystemEvent(eventType, data, correlationId) {
-        await this.publishEvent(kafka_client_1.KAFKA_TOPICS.SYSTEM_EVENTS, eventType, { service: this.serviceName, ...data }, { key: this.serviceName, correlationId });
-    }
-    async publishSystemStartup(metadata = {}) {
-        await this.publishSystemEvent(kafka_client_1.EVENT_TYPES.SYSTEM_STARTUP, {
-            timestamp: new Date().toISOString(),
-            ...metadata,
-        });
-    }
-    async publishSystemShutdown(metadata = {}) {
-        await this.publishSystemEvent(kafka_client_1.EVENT_TYPES.SYSTEM_SHUTDOWN, {
-            timestamp: new Date().toISOString(),
-            ...metadata,
-        });
-    }
-    async publishHealthCheck(status, details = {}) {
-        await this.publishSystemEvent(kafka_client_1.EVENT_TYPES.SYSTEM_HEALTH_CHECK, {
-            status,
-            timestamp: new Date().toISOString(),
-            ...details,
         });
     }
     /**
@@ -284,6 +246,3 @@ exports.KafkaService = KafkaService = KafkaService_1 = __decorate([
     __param(0, (0, common_1.Inject)("KAFKA_OPTIONS")),
     __metadata("design:paramtypes", [Object, config_1.ConfigService])
 ], KafkaService);
-var kafka_client_2 = require("./kafka-client");
-Object.defineProperty(exports, "KAFKA_TOPICS", { enumerable: true, get: function () { return kafka_client_2.KAFKA_TOPICS; } });
-Object.defineProperty(exports, "EVENT_TYPES", { enumerable: true, get: function () { return kafka_client_2.EVENT_TYPES; } });
